@@ -14,7 +14,7 @@ python setup.py install
 ```
 
 ## Examples
-###Connection
+### Connection
 ```python
 from vcfminerclient import VCFMinerClient
 from alta.utils import a_logger, LOG_LEVELS
