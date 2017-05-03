@@ -29,10 +29,12 @@ class VCFMinerClient:
             delete_vcf='ve/delete_workspace/$WORKSPACEID'),
     )
 
+    appkey = 'VcfMiner'
+
     def __init__(self, conf=dict(host='http://localhost:8888',
                                  username='Admin',
-                                 password='temppass',
-                                 appkey='VcfMiner'),
+                                 password='temppass'
+                                 ),
                  logger=None):
 
         self.conf = conf
@@ -60,7 +62,7 @@ class VCFMinerClient:
         url = self.__build_url(cmd='get_token')
         data = dict(username=self.conf.get('username'),
                     password=self.conf.get('password'),
-                    appkey=self.conf.get('appkey'))
+                    appkey=self.__class__.appkey)
 
         response = self.__curl(url=url, data=data)
 
