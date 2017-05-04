@@ -1,5 +1,5 @@
 # vcf-miner.client
-Python client for VCF-Miner
+Python client for [VCF-Miner](https://github.com/Steven-N-Hart/vcf-miner) 
 
 ## How to get started
 Go to a directory of you choice and clone this repository:
