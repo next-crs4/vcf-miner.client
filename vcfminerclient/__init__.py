@@ -3,6 +3,7 @@ import requests
 import json
 import re
 import urllib
+import subprocess
 
 
 class VCFMinerClient:
@@ -27,13 +28,18 @@ class VCFMinerClient:
             base='mongo_svr',
             upload_vcf='uploadvcf/user/$USERID/alias/$ALIASID',
             delete_vcf='ve/delete_workspace/$WORKSPACEID'),
+        server=dict(
+            create_user='java -jar bcrypt_test.jar /local2/tmp/app_VcfMiner/users.csv $USERNAME $PASSWORD',
+        )
     )
 
     appkey = 'VcfMiner'
 
     def __init__(self, conf=dict(host='http://localhost:8888',
                                  username='Admin',
-                                 password='temppass'
+                                 password='temppass',
+                                 server_host=None,
+                                 server_user=None
                                  ),
                  logger=None):
 
@@ -65,6 +71,17 @@ class VCFMinerClient:
                     appkey=self.__class__.appkey)
 
         response = self.__curl(url=url, data=data)
+
+        return response
+
+    def create_user(self, new_username, new_password):
+        params = {'$USERNAME': new_username,
+                  '$PASSWORD': new_password}
+        cmd = self.__build_cmd(cmd='create_user', params=params)
+
+        response = self.__remote_cmd(user=self.conf.get('server_user'),
+                                     host=self.conf.get('server_host'),
+                                     cmd=cmd)
 
         return response
 
@@ -373,6 +390,15 @@ class VCFMinerClient:
 
             return url
 
+    def __build_cmd(self, cmd, dest='server', params=dict()):
+        if dest in self.__class__.commands and cmd in self.__class__.commands.get(dest):
+            cmd = self.__class__.commands.get(dest).get(cmd)
+
+            for old, new in params.iteritems():
+                cmd = cmd.replace(old, new)
+
+            return cmd
+
     def __curl(self, url, data=None, headers=None, files=None, action='post', isjson=False):
         data = urllib.urlencode(data) if data and not isjson else data
         data = json.dumps(data) if data and isjson else data
@@ -382,13 +408,33 @@ class VCFMinerClient:
             elif 'post' in action:
                 r = requests.post(url, data=data, headers=headers, files=files)
 
-        except Exception, e:
+        except Exception as e:
             return self.__format_response(success=False, errors=str(e))
         try:
             return self.__format_response(result=json.loads(r.content))
-        except Exception:
+        except Exception as e:
             result = re.sub(re.compile('<.*?>'), '', r.content) if re.sub(re.compile('<.*?>'), '', r.content) != '' else None
             return self.__format_response(result=result, warnings='No JSON object could be decoded')
+
+    def __remote_cmd(self, user, host, cmd):
+        remote = "{}@{}".format(user, host)
+        try:
+            ssh = subprocess.Popen(["ssh", remote, cmd],
+                                   shell=False,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+
+            result = [line.rstrip('\n') for line in ssh.stdout.readlines()]
+            error = ssh.stderr.readlines()
+
+            if error:
+                result = self.__format_response(success=False, errors=error)
+            else:
+                result = self.__format_response(success=True, result=result)
+        except Exception as e:
+            result = self.__format_response(success=False, errors=str(e))
+
+        return result
 
     def __format_response(self, success=True, result=None, errors=None, warnings=None):
         return dict(success=success,

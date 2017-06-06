@@ -23,7 +23,8 @@ logger = a_logger('main',level='INFO')
 conf=dict(host='http://localhost:8888',
           username='Admin',
           password='temppass',
-          appkey='VcfMiner')
+          server_host='192.168.1.1',
+          server_user='username')
 
 client = VCFMinerClient(conf=conf, logger=logger)
 ```
@@ -40,6 +41,19 @@ result = client.get_authentication()
  'result': {u'isAuthenticated': True,
             u'userToken': u'7c2f7227-1cfe-4815-90da-70dfa2fb6ca7:ea428c44-2f3d-4e07-9d68-b5ddadeef538'
             },
+ 'success': True,
+ 'warnings': None}
+```
+### Create new User
+```python
+result = client.create_user(new_username='newUser', new_password='newPassword')
+```
+```python
+{'errors': None,
+ 'result': ['"#Id"\t"Username"\t"NameLast"\t"NameFirst"\t"Email"\t"Phone"\t"IsLdapUser"\t"IsAllowedToLogin"\t"PersonId"\t"EmployeeId"\t"RacfId"\t"Created"\t"LastLogin"\t"PasswordSaltIfLocal"\t"PasswordHashIfLocal"',
+  '"1"\t"Admin"\t""\t"Admin"\t""\t""\t"false"\t"true"\t""\t""\t""\t"2014-05-30 21:19:03.003"\t"2017-06-06 16:40:53.053"\t"5e63c61d-79a1-4c42-b14b-d7c820570a75"\t"$2a$08$wZ0xOUJw/BBqUxJwxwDhxuYRR4Gyuphmb6LOg3/oymNP8Txuowtay"',
+  '"2"\t"kelaz"\t""\t"Kelaz"\t""\t""\t"false"\t"true"\t""\t""\t""\t"2017-04-19 04:25:44.044"\t"2017-04-26 19:07:29.029"\t"5e63c61d-79a1-4c42-b14b-d7c820570a75"\t"$2a$08$DLgWcx.j43k3pLUBw4DXcOn5R6Da4b2uqvguIIhttA2iQqEBLk./C"',
+  '"3"\t"newUser"\t""\t"NewUser"\t""\t""\t"false"\t"true"\t""\t""\t""\t"2017-06-06 04:40:57.200"\t"2017-06-06 04:40:57.200"\t"5e63c61d-79a1-4c42-b14b-d7c820570a75"\t"$2a$08$KHiMrMLGbqNPfyqs6xd3V.l68CfVd4tUbLW7cn9mqSZg.rx5vs71K"'],
  'success': True,
  'warnings': None}
 ```
