@@ -292,7 +292,7 @@ class VCFMinerClient:
         if self.group_exists(groupname=groupname):
             vcf_obj = self.vcf_exists(vcfname=vcfname, delivery=True)
             if vcf_obj:
-                if not self.vcf_belongs_to_group(vcfname=vcfname, groupame=groupname):
+                if not self.vcf_belongs_to_group(vcfname=vcfname, groupname=groupname):
                     group_obj = self.group_exists(groupname=groupname, delivery=True)
                     url = self.__build_url(cmd='set_permissions')
                     data = dict(
