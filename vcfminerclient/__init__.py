@@ -77,6 +77,7 @@ class VCFMinerClient:
     def create_user(self, new_username, new_password):
         params = {'$USERNAME': new_username,
                   '$PASSWORD': new_password}
+
         cmd = self.__build_cmd(cmd='create_user', params=params)
 
         response = self.__remote_cmd(user=self.conf.get('server_user'),
