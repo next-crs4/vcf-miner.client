@@ -1,0 +1,32 @@
+language: python
+python:
+- 2.7
+- 3.5
+- 3.6
+install:
+- sudo apt-get update
+- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+  -O miniconda.sh; else wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+  -O miniconda.sh; fi
+- bash miniconda.sh -b -p $HOME/miniconda
+- export PATH="$HOME/miniconda/bin:$PATH"
+- hash -r
+- conda config --set always_yes yes --set changeps1 no
+- conda update -q conda
+- conda info -a
+- conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+- source activate test-environment
+- pip install -r requirements.txt
+- python setup.py install
+script:
+- make test
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: ratzeni
+  password:
+    secure: e6A21P+QV/MuyM2VaevR0aK10l2PGdGsPPwWcBoffo6p1pHVInJzoKIp/TFYHofMUIapnFO8Hze8bnJ7db13/QwJvZvcQwgP/3zuGudkS1i8TrVUdg4GLv9IQVvx8BMbJpkVZWdkWots55Xo238IbWql6LsBZMbSWchjz9AsF+GvfKHsY0ulBOPXdnHssKEbynlQy/+MmSMRb4cq6h2IfG/S9We6pDKfX5HtTgXuJh1lhZUUyDmcbQP3MFutb2tSfrbSJObswffaG4sUfHsoWuyTTHh4X/y0d9GWzcvmAbT/CkjSPLer46kzCgqjOi50SqB361SacrPn/u8pd0YCENYvFaSHjO7LYtA2iTi6yMarL+2AR08cB+++zW0jNLOsieZ8zO/Ub4TPbBdJ076/cX7x8OYUpSm07TDjK6wKnDFBs+7k7+CnmiP4IKwHXBUw5I+IF3ZNQmEhKeGHg88P9qneFtO45bpwerq6e8QnqiSZWJiMOtj9qQsauty7g6IZQ8L9RyYPgse0nWx6urw0dkQqBn6bIP3m20e+xWLayzZ9AnXohJBhXgfeJG9RxEq7t9Wnvbmc3ZWVQljq4eOj9GHSNW/9xzJahzTJMChBhMIYCeSk45YuzihaVqTF50NpXsTJJMu9OJgRlXRtpFTEKPvOe0kIMl+UOuW8S1KwpYY=
+  on:
+    tags: true
+    repo: ratzeni/vcf-miner.client
+    condition: $TRAVIS_PYTHON_VERSION = "3.5"
