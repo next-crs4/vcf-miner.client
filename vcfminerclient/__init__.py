@@ -223,8 +223,8 @@ class VCFMinerClient:
 
         return False if not delivery else None
 
-    def vcf_belongs_to_group(self, vcfname, groupame, delivery=False):
-        resources = self.get_vcf_for_group(groupname=groupame).get('result')
+    def vcf_belongs_to_group(self, vcfname, groupname, delivery=False):
+        resources = self.get_vcf_for_group(groupname=groupname).get('result')
         if resources:
             exists = True if filter(lambda r: "name={},".format(vcfname) in r['description'], resources) else False
             return exists if not delivery else filter(lambda r: "name={},".format(vcfname) in r['description'], resources)
