@@ -4,7 +4,7 @@ Python client for [VCF-Miner](https://github.com/Steven-N-Hart/vcf-miner)
 ## How to get started
 Go to a directory of you choice and clone this repository:
 ```
-git clone https://github.com/ratzeni/vcf-miner.client.git
+git clone https://github.com/next-crs4/vcf-miner.client.git
 cd vcf-miner.client
 ```
 
